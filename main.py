@@ -36,4 +36,4 @@ if __name__ == "__main__":
     except Exception as e:
         print("caught unexpected exception: " + str(e))
         raise e
-        sys.exit(1)
+

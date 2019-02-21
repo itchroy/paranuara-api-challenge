@@ -8,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+
 class Database(object):
     """
     Simple handle to a SQLite back-end.
@@ -23,8 +24,8 @@ class Database(object):
 
         self.engine = create_engine('sqlite:///{}'.format(file_name), convert_unicode=True)
         self.session_factory = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=self.engine))
+                                                           autoflush=False,
+                                                           bind=self.engine))
 
         Base.metadata.create_all(bind=self.engine)
         Base.query = self.session_factory.query_property()

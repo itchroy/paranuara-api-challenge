@@ -7,16 +7,14 @@ from api.database import write_scope, read_scope
 class ImportError(Exception):
     pass
 
+
 class DuplicateInstanceIdError(ImportError):
     pass
+
 
 class UnknownReferenceError(ImportError):
     pass
 
-
-class Import(object):
-    def __init__(self, database):
-        self.database
 
 def read_json_file(file_path_in):
     try:

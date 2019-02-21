@@ -5,6 +5,7 @@ from api.endpoint import Endpoint
 from api.service import UnknownInstanceError
 
 import tornado.web
+import tornado.httpclient
 from tornado.testing import AsyncTestCase, gen_test
 
 import json
@@ -28,7 +29,6 @@ class ServiceMock(object):
 
     def get_person_by_id(self, person_id):
         if person_id == 1:
-            print("returning person 0")
             return self.people[person_id - 1]
         elif person_id == 5:
             raise Exception("random unexpected exception")
@@ -67,9 +67,11 @@ def test_company_fetch_200(http_server, http_client, base_url):
 
 @pytest.mark.gen_test()
 def test_company_fetch_404(http_server, http_client, base_url):
-    response = yield http_client.fetch(base_url + "/company/101/employee")
-    assert response.code == 404
-    #assert response.headers.get("content-type") == "application/json; charset=UTF-8"
+    with pytest.raises(tornado.httpclient.HTTPError) as e:
+        yield http_client.fetch(base_url + "/company/101/employee")
 
-    #response_body_json = json.loads(response.body)
-    #assert "employees" in response_body_json
+    assert e.value.code == 404
+    assert e.value.response.headers.get("content-type") == "application/json; charset=UTF-8"
+    assert e.value.response.body == b"{\"message\": \"resource not found\"}"
+
+

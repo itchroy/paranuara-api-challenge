@@ -12,9 +12,9 @@ def seed_database(db):
     f1 = Food(id="orange", category="fruit")
     f2 = Food(id="capsicum", category="vegetable")
 
-    p1 = Person(pid=1, name="Thor", age=650, address="SYD", email="thor@gmail.com", phone="+61459849686", eye_color="brown", alive=True),
-    p2 = Person(pid=2, name="Ironman", age=40, address="BNE", email="ironman@gmail.com", phone="+61480123456", eye_color="brown", alive=True),
-    p3 = Person(pid=3, name="CaptainAmerica", age=75, address="BNE", email="captain@gmail.com", phone="+61480123456", eye_color="brown", alive=True),
+    p1 = Person(pid=1, name="Thor", age=65, address="SYD", email="thor@gmail.com", phone="+61459849686", eye_color="brown", alive=True)
+    p2 = Person(pid=2, name="Ironman", age=40, address="BNE", email="ironman@gmail.com", phone="+61480123456", eye_color="brown", alive=True)
+    p3 = Person(pid=3, name="CaptainAmerica", age=75, address="BNE", email="captain@gmail.com", phone="+61480123456", eye_color="brown", alive=True)
     p4 = Person(pid=4, name="Hulk", age=40, address="BNE", email="hulk@gmail.com", phone="+61480123456", eye_color="brown", alive=True)
 
     # add employees to their respective companies

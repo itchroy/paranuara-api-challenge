@@ -7,7 +7,6 @@ import signal
 from api.service import UnknownInstanceError
 
 
-
 class BaseHandler(tornado.web.RequestHandler):
     """
     Base request handler provides default response headers
@@ -32,13 +31,12 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def write_error(self, status_code, **kwargs):
         """ Override fall-back responder """
-        print(status_code)
         if status_code == 400:
-            self.finish({ 'message': 'bad parameter' })
+            self.finish({'message': 'bad parameter'})
         elif status_code == 404:
-            self.finish({ 'message': 'resource not found' })
+            self.finish({'message': 'resource not found'})
         elif status_code == 500:
-            self.finish({ 'message': 'an unexpected error has occurred' })
+            self.finish({'message': 'an unexpected error has occurred'})
 
 
 class CompanyEmployeeHandler(BaseHandler):
@@ -48,15 +46,15 @@ class CompanyEmployeeHandler(BaseHandler):
     def get(self, id):
         try:
             employees = self.service.get_employees_by_company_id(int(id))
-        except UnknownInstanceError as err:
+        except UnknownInstanceError:
             # exchange exception and catch in `BaseHandler`
             raise tornado.web.HTTPError(404)
 
         # respond with 200 OK and JSON list of `person`s
         payload = []
         for p in employees:
-            payload.append({ "pid": p.pid, "email": p.email })
-        self.write({ "employees" : payload })
+            payload.append({"pid": p.pid, "email": p.email})
+        self.write({"employees": payload})
 
 
 class PersonCompareHandler(BaseHandler):
@@ -71,11 +69,12 @@ class PersonCompareHandler(BaseHandler):
 
         try:
             this_person, other_person, common_friend_ids = self.service.get_person_comparison(int(person_id), int(other_id))
-        except UnknownInstanceError as err:
+        except UnknownInstanceError:
             # exchange exception and catch in `BaseHandler`
             raise tornado.web.HTTPError(404)
 
-        # TODO: choose a more elegant and concise serialization solution rather than packing this by hand
+        # TODO: choose a more elegant and concise serialization solution 
+        # rather than packing this by hand
         response = {
             "this": {
                 "id": this_person.pid,
@@ -106,12 +105,13 @@ class PersonHandler(BaseHandler):
             # exchange exception and catch in `BaseHandler`
             raise tornado.web.HTTPError(404)
 
-        # TODO: choose a more elegant and concise serialization solution rather than packing this by hand
+        # TODO: choose a more elegant and concise serialization solution 
+        # rather than packing this by hand
         response = {
             "username": person.email,
             "age": person.age,
-            "fruits" : [ f.id for f in person.favourite_foods if f.category == "fruit" ],
-            "vegetables": [ f.id for f in person.favourite_foods if f.category == "vegetable" ]
+            "fruits": [f.id for f in person.favourite_foods if f.category == "fruit"],
+            "vegetables": [f.id for f in person.favourite_foods if f.category == "vegetable"]
         }
         self.write(response)
 
@@ -123,11 +123,12 @@ class Endpoint(object):
     def __init__(self, api_service):
         self.api_service = api_service
 
-        # create route handlers and inject the service (business logic) into them
+        # create route handlers and inject the service (business logic) 
+        # into them
         self.application = tornado.web.Application([
-            (r"/company/([0-9]+)/employee", CompanyEmployeeHandler, { "service" : self.api_service }),
-            (r"/person/([0-9]+)/compare", PersonCompareHandler, { "service" : self.api_service }),
-            (r"/person/([0-9]+)", PersonHandler, { "service" : self.api_service })
+            (r"/company/([0-9]+)/employee", CompanyEmployeeHandler, {"service": self.api_service}),
+            (r"/person/([0-9]+)/compare", PersonCompareHandler, {"service": self.api_service}),
+            (r"/person/([0-9]+)", PersonHandler, {"service": self.api_service})
         ])
 
     def get_application(self):
